@@ -1,0 +1,24 @@
+# Utilisez l'image officielle de Go comme image de base
+FROM golang:1.21
+
+# Installer uuidgen (si vous choisissez la première option)
+RUN apt-get update && apt-get install -y uuid-runtime
+
+
+# Définissez le répertoire de travail dans le conteneur
+WORKDIR /app
+
+# Copiez les fichiers go.mod et go.sum pour utiliser la mise en cache des dépendances
+COPY web-services/go.mod web-services/go.sum ./
+
+# Téléchargez toutes les dépendances
+# RUN go mod download
+
+RUN export GO111MODULE=on && go mod tidy && go mod download
+
+# Copiez le reste du code source du projet dans le conteneur
+COPY web-services/ ./
+
+
+# Commande pour exécuter l'application
+CMD ["go", "run", "main.go"]

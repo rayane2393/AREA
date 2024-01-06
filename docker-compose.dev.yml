@@ -1,0 +1,41 @@
+version: '3'
+services:
+  # Backend Go (with Gin Framework) - Development
+  # backend-dev:
+  #   build:
+  #     context: ./area_back_end/
+  #     dockerfile: Dockerfile.dev
+  #   container_name: backend-dev
+  #   volumes:
+  #     - ${BACKEND_PATH}:/app
+  #   ports:
+  #     - "${BACKEND_PORT}:8080"
+  #   environment:
+  #     - GIN_MODE=debug
+
+
+
+  # Mobile React Native
+  # # Mobile Development
+  mobile-dev:
+    build:
+      context: ${MOBILE_PATH}
+      dockerfile: Dockerfile.dev # Utilisez le Dockerfile de développement
+    ports:
+      - "${MOBILE_PORT_DEV}:19000" # Port pour Expo
+    environment:
+      - NODE_ENV=development
+    volumes:
+      - ${MOBILE_PATH}:/app # Montez le répertoire actuel dans le conteneur
+
+  # Frontend Vue.js
+  # Frontend Development
+  # frontend-dev:
+  #   image: node:18.17
+  #   container_name: frontend-dev
+  #   volumes:
+  #     - ${FRONTEND_PATH}:/app
+  #   ports:
+  #     - "${FRONTEND_PORT}:8080"
+  #   working_dir: /app
+  #   command: sh -c "npm install -g @vue/cli-service-global && npm install && npm run serve"

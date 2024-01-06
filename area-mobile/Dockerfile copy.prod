@@ -1,0 +1,46 @@
+# Utilisez l'image de base Node.js
+FROM node:16
+
+# Définissez le répertoire de travail
+WORKDIR /app
+
+# Copiez le package.json et le package-lock.json dans le conteneur
+COPY package*.json ./
+
+# Installez les dépendances
+RUN npm install
+
+# Installez les dépendances Android
+RUN apt-get update && \
+    apt-get install -y wget unzip openjdk-11-jdk && \
+    rm -rf /var/lib/apt/lists/*
+
+# Téléchargez et installez Android SDK Command Line Tools
+RUN mkdir -p /opt/android-sdk/cmdline-tools && \
+    wget https://dl.google.com/android/repository/commandlinetools-linux-6858069_latest.zip -O /tmp/sdk.zip && \
+    unzip /tmp/sdk.zip -d /opt/android-sdk/cmdline-tools && \
+    rm /tmp/sdk.zip
+
+# Définissez les variables d'environnement pour Android SDK
+ENV ANDROID_HOME=/opt/android-sdk
+ENV PATH=$PATH:/opt/android-sdk/cmdline-tools/latest/bin
+# Copiez le fichier metro.config.json dans le conteneur
+
+COPY . .
+
+# Acceptez les licences
+# RUN yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses
+
+# Installez React Native CLI
+RUN npm install -g react-native-cli
+
+# Installez les packages Android SDK que vous souhaitez (exemples ci-dessous)
+# RUN sdkmanager "platform-tools" "build-tools;30.0.2"
+
+# Compilez l'APK
+# Exécutez les étapes pour compiler l'APK
+RUN react-native bundle --platform android --dev false --entry-file App.js --bundle-output android/app/src/main/assets/index.android.bundle --config metro.config.json
+RUN sed -i 's/AREA_UPLOAD_STORE_PASSWORD=/AREA_UPLOAD_STORE_PASSWORD=Jictip2700/' android/gradle.properties
+RUN sed -i 's/AREA_UPLOAD_KEY_PASSWORD=/AREA_UPLOAD_KEY_PASSWORD=Jictip2700/' android/gradle.properties
+RUN cd android && ./gradlew clean && ./gradlew assembleRelease
+RUN mv app/build/outputs/apk/release/app-release.apk /shared-assets/app-release.apk

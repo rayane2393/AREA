@@ -1,0 +1,187 @@
+{
+    "client": {
+      "host": "163.5.23.2"
+    },
+    "server": {
+      "current_time": "1699218517",
+      "services": [
+        {
+          "name": "email",
+          "actions": null,
+          "reactions": [
+            {
+              "name": "send_mail",
+              "description": "send a mail"
+            }
+          ]
+        },
+        {
+          "name": "lol",
+          "actions": [
+            {
+              "name": "game_launch",
+              "description": "a game is launched by user",
+              "arguments": [
+                "summoner_name"
+              ]
+            },
+            {
+              "name": "new_rank",
+              "description": "check if a player changed rank",
+              "arguments": [
+                "summoner_name"
+              ]
+            },
+            {
+              "name": "new_level",
+              "description": "a summoner has leveled up",
+              "arguments": [
+                "summoner_name"
+              ]
+            }
+          ],
+          "reactions": null
+        },
+        {
+          "name": "spotify",
+          "actions": [
+            {
+              "name": "new_song",
+              "description": "a new song is released",
+              "arguments": null
+            },
+            {
+              "name": "new_album_artist",
+              "description": "a new song is released from a specific artist",
+              "arguments": [
+                "artist_id"
+              ]
+            }
+          ],
+          "reactions": null
+        },
+        {
+          "name": "github",
+          "actions": [
+            {
+              "name": "new_push",
+              "description": "there is a new push in repo",
+              "arguments": [
+                "repo_name"
+              ]
+            }
+          ],
+          "reactions": [
+            {
+              "name": "fill_file",
+              "description": "fill a file in AREA repo on github with information"
+            },
+            {
+              "name": "create_repo",
+              "description": "create a repository"
+            }
+          ]
+        },
+        {
+          "name": "discord",
+          "actions": null,
+          "reactions": [
+            {
+              "name": "send_message",
+              "description": "send a private message to user"
+            }
+          ]
+        },
+        {
+          "name": "meteo",
+          "actions": [
+            {
+              "name": "daily_weather",
+              "description": "provide daily weather to user",
+              "arguments": [
+                "city"
+              ]
+            }
+          ],
+          "reactions": null
+        },
+        {
+          "name": "tft",
+          "actions": [
+            {
+              "name": "new_rank",
+              "description": "check if a player changed rank",
+              "arguments": [
+                "summoner_name"
+              ]
+            },
+            {
+              "name": "new_lose",
+              "description": "a player lost a game",
+              "arguments": [
+                "summoner_name"
+              ]
+            },
+            {
+              "name": "new_win",
+              "description": "a player won a game",
+              "arguments": [
+                "summoner_name"
+              ]
+            }
+          ],
+          "reactions": null
+        },
+        {
+          "name": "time",
+          "actions": [
+            {
+              "name": "repeat",
+              "description": "trigger at equal interval",
+              "arguments": [
+                "title",
+                "content",
+                "interval"
+              ]
+            },
+            {
+              "name": "alarm",
+              "description": "fire the reaction at this time",
+              "arguments": [
+                "title",
+                "content",
+                "time_execute"
+              ]
+            }
+          ],
+          "reactions": null
+        },
+        {
+          "name": "steam",
+          "actions": [
+            {
+              "name": "cs_update",
+              "description": "an update is released for cs",
+              "arguments": null
+            },
+            {
+              "name": "tf_update",
+              "description": "an update is released for tf2",
+              "arguments": null
+            },
+            {
+              "name": "dota_update",
+              "description": "an update is released for dota",
+              "arguments": null
+            },
+            {
+              "name": "cs_monthly_player_count",
+              "description": "send the monthly player count for cs",
+              "arguments": null
+            }
+          ],
+          "reactions": null
+        }
+      ]
+    }
+  }

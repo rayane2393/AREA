@@ -1,0 +1,5 @@
+greetings/
+hellos
+hello/
+# *.sum
+.env

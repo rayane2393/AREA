@@ -1,0 +1,540 @@
+definitions:
+  AREA_management.Area:
+    properties:
+      action:
+        type: string
+      action_name:
+        type: string
+      color:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      reaction:
+        type: string
+      reaction_name:
+        type: string
+      toggled:
+        type: boolean
+    type: object
+  AREA_management.AreaCreationErrorResponse:
+    properties:
+      message:
+        example: AREA not valid
+        type: string
+    type: object
+  AREA_management.AreaCreationRequest:
+    properties:
+      action:
+        example: spotify
+        type: string
+      action_name:
+        example: new_song
+        type: string
+      color:
+        example: '#FF0000'
+        type: string
+      name:
+        example: agagou
+        type: string
+      reaction:
+        example: email
+        type: string
+      reaction_name:
+        example: send_mail
+        type: string
+      time_execute:
+        example: '*'
+        type: string
+      toggled:
+        type: boolean
+    type: object
+  AREA_management.AreaCreationSuccessResponse:
+    properties:
+      id:
+        type: integer
+      message:
+        example: AREA created successfully
+        type: string
+    type: object
+  AREA_management.DeleteAreaRequest:
+    properties:
+      area_id:
+        type: integer
+    required:
+    - area_id
+    type: object
+  AREA_management.ErrorResponse:
+    properties:
+      message:
+        type: string
+    type: object
+  about.about:
+    properties:
+      client:
+        $ref: '#/definitions/about.client'
+      server:
+        $ref: '#/definitions/about.server'
+    type: object
+  about.action:
+    properties:
+      arguments:
+        items:
+          type: string
+        type: array
+      description:
+        type: string
+      name:
+        type: string
+    type: object
+  about.client:
+    properties:
+      host:
+        type: string
+    type: object
+  about.reaction:
+    properties:
+      description:
+        type: string
+      name:
+        type: string
+    type: object
+  about.server:
+    properties:
+      current_time:
+        type: string
+      services:
+        items:
+          $ref: '#/definitions/about.service'
+        type: array
+    type: object
+  about.service:
+    properties:
+      actions:
+        items:
+          $ref: '#/definitions/about.action'
+        type: array
+      name:
+        type: string
+      reactions:
+        items:
+          $ref: '#/definitions/about.reaction'
+        type: array
+    type: object
+  login.Code:
+    properties:
+      code:
+        type: string
+    type: object
+  login.ErrorResponse:
+    properties:
+      error:
+        type: string
+    type: object
+  login.LoginCredentials:
+    properties:
+      password:
+        example: password123
+        type: string
+      username:
+        example: user@example.com
+        type: string
+    type: object
+  login.LoginErrorResponse:
+    properties:
+      message:
+        example: Incorrect credentials
+        type: string
+    type: object
+  login.LoginResponse:
+    properties:
+      message:
+        type: string
+      token:
+        type: string
+    type: object
+  login.LoginSuccessResponse:
+    properties:
+      message:
+        example: Login successful
+        type: string
+      token:
+        example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+        type: string
+    type: object
+  login.RegisterCredentials:
+    properties:
+      email:
+        example: newuser@example.com
+        type: string
+      password:
+        example: securePassword123
+        type: string
+      username:
+        example: newuser
+        type: string
+    type: object
+  login.RegisterErrorResponse:
+    properties:
+      message:
+        example: Username already taken
+        type: string
+    type: object
+  login.RegisterSuccessResponse:
+    properties:
+      message:
+        example: Account registered successfully
+        type: string
+    type: object
+info:
+  contact: {}
+paths:
+  /about.json:
+    get:
+      consumes:
+      - application/json
+      description: Returns detailed information about the client, server, and the
+        services available with their actions and reactions.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Detailed information about client and server
+          schema:
+            $ref: '#/definitions/about.about'
+      summary: Get detailed information about the server and services
+      tags:
+      - About
+  /create-area:
+    post:
+      consumes:
+      - application/json
+      description: Create a new AREA with specified parameters.
+      parameters:
+      - description: API Key
+        in: header
+        name: x-api-key
+        required: true
+        type: string
+      - description: Bearer Token
+        in: header
+        name: bearer
+        required: true
+        type: string
+      - description: AREA Creation Data
+        in: body
+        name: area
+        required: true
+        schema:
+          $ref: '#/definitions/AREA_management.AreaCreationRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: AREA created successfully
+          schema:
+            $ref: '#/definitions/AREA_management.AreaCreationSuccessResponse'
+        "400":
+          description: Invalid input data
+          schema:
+            $ref: '#/definitions/AREA_management.AreaCreationErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Create a new AREA
+      tags:
+      - AREA
+  /delete-area:
+    post:
+      consumes:
+      - application/json
+      description: Delete an existing AREA by its ID.
+      parameters:
+      - description: API key for access
+        in: header
+        name: x-api-key
+        required: true
+        type: string
+      - description: Bearer token for user authentication
+        in: header
+        name: bearer
+        required: true
+        type: string
+      - description: Request body for deleting an AREA
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/AREA_management.DeleteAreaRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 'message: AREA deleted successfully'
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: 'error: error message'
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: 'message: invalid API key or Token not valid'
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: 'message: Error while deleting AREA please try again'
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Delete an AREA
+      tags:
+      - AREA
+  /get-area:
+    post:
+      consumes:
+      - application/json
+      description: Retrieves all the areas associated with the user identified by
+        the provided token.
+      parameters:
+      - description: Bearer Token
+        in: header
+        name: bearer
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successful retrieval of areas
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Invalid request data
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: Invalid API key or bearer token
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get all areas for a user
+      tags:
+      - AREA
+  /login:
+    post:
+      consumes:
+      - application/json
+      description: Authenticate user and provide a token upon successful authentication.
+      parameters:
+      - description: API Key
+        in: header
+        name: x-api-key
+        required: true
+        type: string
+      - description: User Credentials
+        in: body
+        name: credentials
+        required: true
+        schema:
+          $ref: '#/definitions/login.LoginCredentials'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Login successful
+          schema:
+            $ref: '#/definitions/login.LoginSuccessResponse'
+        "400":
+          description: Invalid username or password
+          schema:
+            $ref: '#/definitions/login.LoginErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: User login
+      tags:
+      - Auth
+  /login/discord:
+    post:
+      consumes:
+      - application/json
+      description: Login or register a new user using discord OAuth by providing a
+        discord code.
+      parameters:
+      - description: API key for access control
+        in: header
+        name: x-api-key
+        required: true
+        type: string
+      - description: Bearer token if the user is already logged in
+        in: header
+        name: Bearer
+        type: string
+      - description: discord code for OAuth
+        in: body
+        name: code
+        required: true
+        schema:
+          $ref: '#/definitions/login.Code'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Login successful with token
+          schema:
+            $ref: '#/definitions/login.LoginResponse'
+        "400":
+          description: Bad request if the code is not provided or invalid
+          schema:
+            $ref: '#/definitions/login.ErrorResponse'
+        "401":
+          description: Unauthorized if the API key is not valid
+          schema:
+            $ref: '#/definitions/login.ErrorResponse'
+        "500":
+          description: Internal Server Error when login fails
+          schema:
+            $ref: '#/definitions/login.ErrorResponse'
+      summary: Login with discord OAuth
+      tags:
+      - Auth
+  /login/github:
+    post:
+      consumes:
+      - application/json
+      description: Login or register a new user using GitHub OAuth by providing a
+        GitHub code.
+      parameters:
+      - description: API key for access control
+        in: header
+        name: x-api-key
+        required: true
+        type: string
+      - description: Bearer token if the user is already logged in
+        in: header
+        name: Bearer
+        type: string
+      - description: GitHub code for OAuth
+        in: body
+        name: code
+        required: true
+        schema:
+          $ref: '#/definitions/login.Code'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Login successful with token
+          schema:
+            $ref: '#/definitions/login.LoginResponse'
+        "400":
+          description: Bad request if the code is not provided or invalid
+          schema:
+            $ref: '#/definitions/login.ErrorResponse'
+        "401":
+          description: Unauthorized if the API key is not valid
+          schema:
+            $ref: '#/definitions/login.ErrorResponse'
+        "500":
+          description: Internal Server Error when login fails
+          schema:
+            $ref: '#/definitions/login.ErrorResponse'
+      summary: Login with GitHub OAuth
+      tags:
+      - Auth
+  /modify-area:
+    post:
+      consumes:
+      - application/json
+      description: Modify an existing AREA with new details provided by the user.
+      parameters:
+      - description: Bearer token for authorization
+        in: header
+        name: bearer
+        required: true
+        type: string
+      - description: API key for access control
+        in: header
+        name: x-api-key
+        required: true
+        type: string
+      - description: Area information to be modified
+        in: body
+        name: area
+        required: true
+        schema:
+          $ref: '#/definitions/AREA_management.Area'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: AREA modified successfully
+          schema:
+            $ref: '#/definitions/AREA_management.Area'
+        "400":
+          description: Bad request when the parameters are not filled
+          schema:
+            $ref: '#/definitions/AREA_management.ErrorResponse'
+        "401":
+          description: Unauthorized if the token is not valid or missing
+          schema:
+            $ref: '#/definitions/AREA_management.ErrorResponse'
+        "500":
+          description: Internal Server Error when AREA modification fails
+          schema:
+            $ref: '#/definitions/AREA_management.ErrorResponse'
+      summary: Modify an existing AREA
+      tags:
+      - AREA
+  /register:
+    post:
+      consumes:
+      - application/json
+      description: Register a new user with a username, email, and password.
+      parameters:
+      - description: API Key
+        in: header
+        name: x-api-key
+        required: true
+        type: string
+      - description: User Registration Data
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/login.RegisterCredentials'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Account registered successfully
+          schema:
+            $ref: '#/definitions/login.RegisterSuccessResponse'
+        "400":
+          description: Invalid input data
+          schema:
+            $ref: '#/definitions/login.RegisterErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: User registration
+      tags:
+      - Auth
+swagger: "2.0"

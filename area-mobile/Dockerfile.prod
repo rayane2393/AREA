@@ -1,0 +1,55 @@
+# Utilisez l'image de base Node.js
+FROM node:16
+
+# Définissez le répertoire de travail
+WORKDIR /app
+
+# Copiez le package.json et le package-lock.json dans le conteneur
+COPY package*.json ./
+
+# Installez les dépendances
+RUN npm install
+
+# Copiez le reste de l'application dans le conteneur
+COPY . /app
+
+# Installez les dépendances Android
+RUN apt-get update
+RUN apt-get install -y wget unzip openjdk-11-jdk
+RUN rm -rf /var/lib/apt/lists/*
+
+RUN mkdir -p /opt/android-sdk/cmdline-tools && \
+    wget https://dl.google.com/android/repository/commandlinetools-linux-6858069_latest.zip -O /tmp/sdk.zip && \
+    unzip /tmp/sdk.zip -d /opt/android-sdk/cmdline-tools && \
+    rm /tmp/sdk.zip
+
+RUN export PATH=$PATH:/opt/android-sdk/cmdline-tools/bin 
+RUN export ANDROID_HOME=/opt/android-sdk
+ENV ANDROID_HOME=/opt/android-sdk
+ENV PATH=$PATH:/opt/android-sdk/cmdline-tools/latest/bin
+
+RUN ls -la
+RUN ls /opt/android-sdk/cmdline-tools/
+RUN ls /opt/android-sdk/cmdline-tools/cmdline-tools/
+
+RUN /opt/android-sdk/cmdline-tools/cmdline-tools/bin/sdkmanager --licenses
+RUN yes | /opt/android-sdk/cmdline-tools/cmdline-tools/bin/sdkmanager --licenses
+
+# Installez React Native CLI
+RUN npm install -g react-native-cli
+# Installez les packages Android SDK que vous souhaitez (exemples ci-dessous)
+RUN /opt/android-sdk/cmdline-tools/cmdline-tools/bin/sdkmanager "cmdline-tools;latest" "platform-tools" "build-tools;30.0.2"
+
+
+# Compilez l'APK
+# Exécutez les étapes pour compiler l'APK
+RUN export ANDROID_HOME=/opt/android-sdk
+RUN export PATH=$PATH:/opt/android-sdk/cmdline-tools/bin
+RUN ls -la
+RUN ls -la /app
+# RUN ls -la ./metro.config.json
+RUN react-native bundle --platform android --dev false --entry-file App.js --bundle-output android/app/src/main/assets/index.android.bundle --config ./metro.config.js
+RUN sed -i 's/AREA_UPLOAD_STORE_PASSWORD=/AREA_UPLOAD_STORE_PASSWORD=Jictip2700/' android/gradle.properties
+RUN sed -i 's/AREA_UPLOAD_KEY_PASSWORD=/AREA_UPLOAD_KEY_PASSWORD=Jictip2700/' android/gradle.properties
+RUN cd android && ./gradlew clean && ./gradlew assembleRelease
+RUN mv app/build/outputs/apk/release/app-release.apk /shared-assets/client.apk
