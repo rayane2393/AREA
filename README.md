@@ -67,12 +67,4 @@ Here are all the different actions/reactions that you can use:
   - cs monthly player count.
   
 ## API endpoints:  
-![image](assets/Swagger.png)
-
-
-### Made by:  
-- [Guillaume Clement-Bonniel-Veyron] - Mobile client developer  
-- [Theo Villemer] - Back-end developer  
-- [Nicolas Poupon] - Web client developer  
-- [Malek.gatoufi] - DevOps/Full-stack developer    
-- [Rayane Memiche] - Web client developer  
+![image](assets/Swagger.png) 
